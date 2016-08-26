@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ x"$1" == x"--verbose" ]; then
+	echo "SSH reverse tunnel by Henrik Holst <github.com/hholst80/ssh-revtun>"
+	set -x
+fi
+
+if [ -f $HOME/.ssh-revtun.conf ]; then
+	source $HOME/.ssh-revtun.conf
+fi
+
+PORT=${PORT:-1234}
+RCMD=${RCMD:-top}
+
+if [ x"$USER" == x"" ]; then
+	echo "\$USER is not set. Please configure $0."
+	exit 1
+fi
+
+if [ x"$HOST" == x"" ]; then
+	echo "\$HOST is not set. Please configure $0."
+	exit 1
+fi
+
+if [ x"$PORT" == x"" ]; then
+	echo "\$PORT is not set. Please configure $0."
+	exit 1
+fi
+
+while `true`
+do
+        echo "`date`: Connecting to $HOST as $USER."
+        ssh -q -t -R localhost:$PORT:localhost:22 $USER@$HOST $RCMD > /dev/null
+        echo "`date`: Disconnected. Reconnecting in $WAIT sec."
+        sleep $WAIT
+done
