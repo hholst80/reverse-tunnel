@@ -25,7 +25,7 @@ fi
 while `true`
 do
         echo "`date`: Connecting to $HOST as $USER."
-        ssh -q -t -R localhost:$PORT:localhost:22 $USER@$HOST $RCMD > /dev/null
+        ssh -q -o PasswordAuthentication=no -t -R localhost:$PORT:localhost:22 $USER@$HOST $RCMD > /dev/null
         echo "`date`: Disconnected. Reconnecting in $WAIT sec."
         sleep $WAIT
 done
